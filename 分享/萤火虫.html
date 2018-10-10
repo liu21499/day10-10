@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+
+		<style type="text/css">
+			*{
+				padding: 0;
+				margin: 0;
+			}
+			#bg{
+				background: url(img/bg.jpg)  no-repeat;
+				background-size: cover;
+				width: 100%;
+				height: 100%;
+				position: fixed;
+			}
+			img {
+				width: 18px;
+				height: 18px;
+				position: absolute;
+				
+			}
+		</style>
+	</head>
+	<body>
+		<div id="bg">
+		</div>
+	</body>
+</html>
+<script src="js/sport.js"></script>                                                                           
+<script>
+	window.onload = function(){
+		for( var i = 1 ; i < rand(100 , 200) ; i++ ){
+			var fireFly=new FireFly();
+			fireFly.init();
+		}
+	}
+	function FireFly(){
+		this.img = document.createElement("img");
+		this.init = function(){
+			this.img.src="img/1.jpg";
+			document.body.appendChild(this.img);
+			this.img.style.left = rand( 0 , document.documentElement.clientWidth - this.img.offsetWidth ) + "px";
+			this.img.style.top = rand( 0,  document.documentElement.clientHeight - this.img.offsetHeight ) + "px";
+			setInterval(function(){
+				this.move();
+			}.bind(this) , 3000)
+		}
+		this.move = function(){
+			sport( this.img ,{
+				left:rand( 0 , document.documentElement.clientWidth - this.img.offsetWidth),
+				top:rand( 0 , document.documentElement.clientHeight - this.img.offsetHeight )
+			})
+		}
+	}
+	function rand(min,max){
+		return Math.round( Math.random()*(max-min) + min);
+	}
+</script>

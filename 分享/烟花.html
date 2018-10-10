@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			html,
+			body {
+				overflow: hidden;
+			}
+			body {
+				background: #000;
+			}
+			.fire {
+				width: 30px;
+				height: 30px;
+				border-radius: 50%;
+				background: red;
+				position: absolute;
+			}
+			.spark {
+				position: absolute;
+				width: 6px;
+				height: 6px;
+				border-radius: 50%;
+			}
+		</style>
+	</head>
+	<body>
+	</body>
+	<script src="js/sport.js"></script>
+<script type="text/javascript">
+	//fire ： 创建  移动  爆炸
+	
+	document.onclick = function(evt){//点击页面时触发点击事件，调用Fire函数
+		var e = evt || window.event;
+		var fire=new Fire({x:e.pageX,y:e.pageY});
+		/*alert(e.pageX);
+		alert(e.pageY);*/
+		fire.init().move();//链式调用，返回值必须为this，指向当前对象
+	}
+	function Fire(pos){
+		this.pos = pos;
+		this.box = document.createElement("div");
+		this.init = function(){//创建火花
+			this.box.className = "fire";
+			document.body.appendChild(this.box);
+			this.box.style.left = this.pos.x + "px";
+			this.box.style.top = document.documentElement.clientHeight-100 + "px";
+			return this;
+		}
+		this.move = function(){//移动火花
+			sport( this.box , {top : this.pos.y},function(){
+				this.box.remove();//运动结束后，火花消失
+				this.explode();//烟花出场
+			}.bind(this))//bind的返回值是一个函数，bind改变了this的指向，
+		}
+		this.explode = function(){//火花爆炸
+			//烟花出场   
+			var count = rand(30,50);//随机产生烟花的数量
+			for( var i = 0 ; i < count ; i++ ){
+				var spark=new Spark( this.pos )
+				spark.init();//调用烟花函数
+				spark.move()
+			}
+		}
+	}
+	
+	//spark ： 创建  移动
+	function Spark(pos){
+		this.pos = pos;
+		this.box = document.createElement("div");
+		this.init = function(){//创建烟花
+			document.body.appendChild(this.box);
+			this.box.className = "spark";
+			//设置烟花位置（鼠标点击位置）
+			this.box.style.left = this.pos.x + "px";
+			this.box.style.top = this.pos.y + "px";
+			this.box.style.backgroundColor = getColor();//给每一个烟花给随机颜色
+			return this;
+		}
+		this.move = function(){//移动烟花
+			this.speedX = rand(-7,7);
+			this.speedY = rand(-10,5);
+			this.timer = setInterval( function(){
+				this.box.style.left = this.box.offsetLeft + this.speedX + "px";
+				this.box.style.top = this.box.offsetTop + this.speedY++ + "px";
+				if( this.box.offsetTop>document.documentElement.clientY){
+					clearInterval( this.timer );
+					this.box.remove();
+				}
+			}.bind(this) ,30)
+		}
+	}
+	//封装一个m~n之间的随机数
+	function rand( min,max ){
+		return Math.round( Math.random()*(max-min) + min )
+	}
+	
+	function getColor(){
+		var str = "0123456789abcdef";
+		//从字符串中随机取出六个字符 进行拼接
+		//下标范围 ： 0--15
+		var color = "#";
+		for( var i = 1 ; i <= 6 ; i++ ){
+			color += str.charAt( rand(0,15) );//根据随机下标得到对应的字符
+		}
+		return color;
+	}
+</script>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<script type="text/javascript">
+			var test=[1,4,3,5,6,5,6,5,5,6,4,4,4];
+			
+			//方法一（常规，删除重复的元素）
+			function arrayRemoveRepeat1(arr){
+				for(var i = 0,len = arr.length;i < len ;i ++){
+					for(var j = i+1;j <　arr.length ;j ++){
+						if(arr[i] == arr[j]){
+							arr.splice(j,1);
+							j--;//删除之后下标先减一，防止错过相同的元素
+						}
+					}
+				}
+				return arr;
+			}
+			console.log(arrayRemoveRepeat1(test));
+			
+			
+			//方法二（ES6 Set去重）
+			function arrayRemoveRepeat2(arr){
+				return [...new Set(arr)];
+			}
+			console.log(arrayRemoveRepeat2(test));
+			
+			//方法三（利用forEach和indexOf将相同元素的最后一个push进一个新的数组）
+			function arrayRemoveRepeat3(arr){
+				var arr1=[];
+				arr.forEach(function(value,index,arr){
+					var boo = arr.indexOf(value,index+1);
+					if(boo === -1){//除此元素之外没其他相同元素就push进数组
+						arr1.push(value);
+					}
+				})
+				return arr1;
+			}
+			console.log(arrayRemoveRepeat3(test));
+			
+			//方法四（利用对象的特性（唯一性），不能出现相同的key值）
+			function arrayRemoveRepeat4(arr){
+				var obj={};
+				var arr1=[];
+				for(var i = 0,len = arr.length ;i < len ;i ++){
+					if(!obj[arr[i]]){
+						obj[arr[i]]=1;
+						arr1.push(arr[i]);
+					}
+				}
+				return arr1;
+			}
+			console.log(arrayRemoveRepeat4(test));
+			
+			//方法五(排序后利用相邻的元素进行判断然后push)
+			function arrayRemoveRepeat5(arr){
+				var str=arr.sort(function(m,n){return m-n;})
+				var st=[];
+				for(var i = 0;i < str.length; i++){
+					if(str[i]!=str[i+1]){
+						st.push(str[i]);
+					}
+				}
+				return st;
+			}
+			console.log(arrayRemoveRepeat5(test));
+			
+		</script>
+	</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			li {
+				list-style: none;
+			}
+			img {
+				display: block;
+			}
+			#box {
+				width: 350px;
+				height: 400px;
+				position: relative;
+				border: 1px solid red;
+			}
+			#box1 {
+				width: 350px;
+				height: 350px;
+			}
+			.mImg {
+				width: 350px;
+				height: 350px;
+			}
+			
+			.mImg li {
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+			
+			#bottom ul {
+				position: absolute;
+				width: 350px;
+			}
+			#bottom li {
+				width: 50px;
+				height: 50px;
+			    float: left;
+				margin-left: 20px;
+			}
+		   #right img {
+				position: absolute;
+				top:0;
+			    left:0;
+            }
+			#big{
+				width: 350px;
+				height: 350px;
+				overflow: hidden;
+				position: absolute;
+				left:360px;
+			    top:0;
+			    border: 1px solid red;
+			    display: none;
+			}
+			#right img{
+				width: 800px;
+				height:800px;
+		}
+			#mask {
+				width: 154px;
+				height: 154px;
+				background: grey;
+				opacity: 0.3;
+				position: absolute;
+				top: 0;
+				left: 0;
+				cursor: move;
+				display: none;
+		</style>
+	</head>
+
+	<body>
+		<div id="box">
+			<div id="box1">
+				<div id="small">
+					<ul class="mImg" id="top">
+						<li><img src="img/pic1m.jpg" /></li>
+						<li><img src="img/pic2m.jpg" /></li>
+						<li><img src="img/pic3m.jpg" /></li>
+						<li><img src="img/pic4m.jpg" /></li>
+					</ul>
+					<div id="mask"></div>
+				</div>
+				<div id="ss">
+					<ul id="bottom">
+						<li><img src="img/pic1s.jpg" /></li>
+						<li><img src="img/pic2s.jpg" /></li>
+						<li><img src="img/pic3s.jpg" /></li>
+						<li><img src="img/pic4s.jpg" /></li>
+					</ul>
+				</div>
+				<div id="big"> 
+					<ul class="bImg" id="right">
+						<li><img src="img/pic1b.jpg" /></li>
+						<li><img src="img/pic2b.jpg" /></li>
+						<li><img src="img/pic3b.jpg" /></li>
+						<li><img src="img/pic4b.jpg" /></li>
+					</ul>
+				</div>	
+			</div>
+		</div>
+	</body>
+
+</html>
+<script type="text/javascript">
+	//标题的下标和内容的下标一一对应
+	var olist = $id("top").getElementsByTagName("li");
+	var ulist = $id("bottom").getElementsByTagName("li");
+	var rlist= $id("right").getElementsByTagName("li");
+	var box1=$id("box1"),
+		small = $id("small"),
+		mask= $id("mask"),
+		big=$id("big");
+	//为标题添加相同事件 循环
+	for(let i = 0; i < ulist.length; i++) {
+		//ulist[i].index=i;//为标题添加属性，用来存储每一个标题在页面中的下标
+		ulist[i].onmouseover = function() {
+			for(var j = 0; j < ulist.length; j++) {
+				olist[j].style.display = "none";
+				rlist[j].style.display = "none";
+			}
+			olist[i].style.display = "block";
+			rlist[i].style.display ="block";
+		}
+	}
+	small.onmouseover=function(){
+		mask.style.display="block";
+		big.style.display="block"
+	}
+	small.onmouseout=function(){
+		mask.style.display="none";
+		big.style.display="none"
+	}
+	
+	small.onmousemove=function(e){
+		var e=e||event;
+		//鼠标在mask的中间位置因此宽高都要除以2
+		var x = e.pageX - box1.offsetLeft - mask.offsetWidth/2;
+		var y = e.pageY - mask.offsetHeight/2-box1.offsetTop;
+		//设置mask移动的最大边界
+		var maxL = box1.offsetWidth - mask.offsetWidth;
+		var maxT = box1.offsetHeight - mask.offsetHeight;
+		//判断mask的left和top
+		x = x<0?0:(x>maxL?maxL:x);
+		y = y<0?0:(y>maxT?maxT:y);
+		mask.style.left = x + "px";
+		mask.style.top = y + "px";
+		for(var j=0;j<rlist.length;j++){
+			//移动比例：大图的left/mask的left=大图的宽度/小图宽度
+			var bigImgLeft=
+			x*(rlist[j].children[0].offsetWidth)/(small.offsetWidth);
+			var bigImgTop=
+			y*(rlist[j].children[0].offsetHeight)/(small.offsetHeight);
+			//设置大图移动的距离
+			rlist[j].children[0].style.left = -bigImgLeft + "px";
+			rlist[j].children[0].style.top = -bigImgTop + "px";
+		}
+	}
+	
+	function $id(id){
+		return document.getElementById(id);
+	}
+</script>
